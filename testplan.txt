@@ -1,0 +1,52 @@
+Test plan
+
+	Our workloads were designed to cover the remainder of the cases that were not addressed by Workloads A-D. 
+	We found that the following cases were covered:
+
+	Workload A:
+	- Initializing memory on the first call to malloc()
+	- Storing one byte
+	- Freeing one byte
+	- Reusing the space where a freed byte was
+	- Combining nodes to the right after calling free()
+	Workload B:
+	- Storing multiple entities at the same time
+	- Freeing nodes that were not the first node
+	- Reusing space other than the first node
+	- Combining freed nodes to the left and right
+	Workload C:
+	- Storing nodes in the intermediate spaces created by node splitting and freeing
+	- Freeing a targeted node that occurs after another node in use
+	Workload D:
+	- Allocating memory of different sizes, up to 64 bytes
+	- Freeing and then splitting intermediate nodes without breaking the linked list
+	- Filling nodes that can accommodate requested size, but cannot split 
+
+
+Workload E
+
+	This workload attempt to randomly allocate amounts of memory between 0-4100 bytes, storing the pointers in an array. Once malloc() has failed three times, free all the pointers. Finally, free myblock - 1, first block of memory, a NULL pointer, and a non pointer.
+	This workload covers the following cases:
+
+	- Initializing memory on the first call to malloc() even in the case of an error	
+	- Rejecting attempts to malloc() invalid sizes (too small or too big of a request)
+	- Rejecting attempts to malloc when the user is out of memory
+	- Returning NULL after a failed malloc()
+	- Leaving memory unchanged after a failed malloc() or free()
+	- Continuing to be able to malloc() and free() after encountering a malloc() error
+	- Rejecting attempts to free addresses that are not allocated by malloc()
+	- Rejecting attempts to free a pointer twice
+	- Rejecting attempts to free a NULL pointer
+	- Rejecting attempts to free a non-pointer
+	- Rejecting attempts to free addresses that are not pointers
+
+
+Workload F
+
+	This workload attempts to use up all of the available memory by allocating 512 blocks of 4 bytes. That would take up our 4096 byte memory block. It then proceeds to free 50 random blocks that were allocated. It will then reallocate those 50 block. This workload will show that no memory is lost due to free(), and that all the newly allocated blocks will fit into the remaining available memory.
+	This workload covers the following cases:
+	
+	- Using up all available memory
+	- Show no loss of memory due to free()
+	- Being able to allocate memory into isolated blocks that are surrounded by actively used blocks of memory
+	- Freeing all the allocated memory and merging the blocks back into one large inactive block of memory
